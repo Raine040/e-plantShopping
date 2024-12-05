@@ -273,8 +273,12 @@ function ProductList() {
     textDecoration: "none",
   };
 
-  const handleAddToCart = (plant) => {
-    dispatch(addItem(plant));
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product));
+    setAddedToCart((prevState) => ({
+      ...prevState,
+      [product.name]: true, // Set the product name as key and value as true to indicate it's added to cart
+    }));
   };
 
   const handleCartClick = (e) => {
@@ -333,9 +337,9 @@ function ProductList() {
                     d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8"
                     fill="none"
                     stroke="#faf9f9"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     id="mainIconPathAttribute"
                   ></path>
                 </svg>
@@ -346,15 +350,30 @@ function ProductList() {
       </div>
       {!showCart ? (
         <div className="product-grid">
-          {plantsArray.map((plant, index) => (
-            <div key={index} className="plant-card">
-              <h2>{plant.name}</h2>
-              <img src={plant.imageUrl} alt={plant.name} />
-              <p>{plant.description}</p>
-              <p>Cost: ${plant.cost}</p>
-              <button onClick={() => handleAddToCart(plant)}>
-                Add to Cart
-              </button>
+          {plantsArray.map((category, index) => (
+            <div key={index}>
+              <h1>
+                <div>{category.category}</div>
+              </h1>
+              <div className="product-list">
+                {category.plants.map((plant, plantIndex) => (
+                  <div className="product-card" key={plantIndex}>
+                    <img
+                      className="product-image"
+                      src={plant.image}
+                      alt={plant.name}
+                    />
+                    <div className="product-title">{plant.name}</div>
+                    {/*Similarly like the above plant.name show other details like description and cost*/}
+                    <button
+                      className="product-button"
+                      onClick={() => handleAddToCart(plant)}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
