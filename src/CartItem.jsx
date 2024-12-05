@@ -1,28 +1,63 @@
 import { useSelector, useDispatch } from "react-redux";
-import { removeItem, updateItem } from "./CartSlice";
+import { removeItem, updateQuantity } from "./CartSlice";
 import "./CartItem.css";
 
-const CartItem = ({ onContinueShopping }) => {
+const CartItem = ({ onContinueShopping, setAddedToCart }) => {
   const cart = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
 
   // Calculate total amount for all products in the cart
-  const calculateTotalAmount = (cartItems) => {
-    return cartItem.reduce((total, item) => {
-      return total + item.quantity * item.cost;
+  const calculateTotalAmount = () => {
+    const total = cart.reduce((acc, item) => {
+      const cost = parseInt(item.cost.replace("$", ""));
+      return acc + cost * item.quantity;
     }, 0);
+    return total;
   };
 
-  const handleContinueShopping = (e) => {};
+  const handleContinueShopping = () => {
+    onContinueShopping();
+  };
 
-  const handleIncrement = (item) => {};
+  const handleIncrement = (item) => {
+    if (item) {
+      let qty = item.quantity;
+      dispatch(updateQuantity({ name: item.name, quantity: ++qty }));
+    }
+  };
 
-  const handleDecrement = (item) => {};
+  const handleDecrement = (item) => {
+    if (item) {
+      let tempQty = item.quantity;
+      const qty = --tempQty;
+      if (qty == 0) {
+        handleRemove(item);
+      } else {
+        dispatch(updateQuantity({ name: item.name, quantity: qty }));
+      }
+    }
+  };
 
-  const handleRemove = (item) => {};
+  const handleRemove = (item) => {
+    if (item) {
+      setAddedToCart((prev) => ({
+        ...prev,
+        [item.name]: false,
+      }));
+      dispatch(removeItem(item.name));
+    }
+  };
 
   // Calculate total cost based on quantity for an item
-  const calculateTotalCost = (item) => {};
+  const calculateTotalCost = (item) => {
+    const cost = parseInt(item.cost.replace("$", ""));
+    const total = cost * item.quantity;
+    return total;
+  };
+
+  const handleCheckoutShopping = () => {
+    alert("Items added for checkout!");
+  };
 
   return (
     <div className="cart-container">
@@ -78,7 +113,12 @@ const CartItem = ({ onContinueShopping }) => {
           Continue Shopping
         </button>
         <br />
-        <button className="get-started-button1">Checkout</button>
+        <button
+          className="get-started-button1"
+          onClick={handleCheckoutShopping}
+        >
+          Checkout
+        </button>
       </div>
     </div>
   );
