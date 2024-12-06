@@ -293,10 +293,15 @@ function ProductList({ setShowProductList }) {
     setShowCart(false); // Hide the cart when navigating to About Us
   };
 
-  const handleContinueShopping = (e) => {
-    e.preventDefault();
+  const handleContinueShopping = () => {
     setShowCart(false);
   };
+
+  const totalItems = () => {
+    const num_of_items = cart.reduce((acc, item) => acc + item.quantity, 0);
+    return num_of_items;
+  };
+
   return (
     <div>
       <div className="navbar" style={styleObj}>
@@ -328,6 +333,7 @@ function ProductList({ setShowProductList }) {
           <div>
             {" "}
             <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
+              <div className="cart_quantity_count">{totalItems()}</div>
               <h1 className="cart">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
